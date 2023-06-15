@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_parallax::{
-    CreateParallaxEvent, LayerData, LayerSpeed, ParallaxCameraComponent, ParallaxMoveEvent,
+    CreateParallaxEvent, LayerData, ParallaxEffect, ParallaxCameraComponent, ParallaxMoveEvent,
     ParallaxPlugin, ParallaxSystems,
 };
 
@@ -41,7 +41,7 @@ pub fn initialize_camera_system(
     create_parallax.send(CreateParallaxEvent {
         layers_data: vec![
             LayerData {
-                speed: LayerSpeed::Bidirectional(0.9, 0.9),
+                speed: ParallaxEffect::Bidirectional(0.9, 0.9),
                 path: "sky-stars.png".to_string(),
                 tile_size: Vec2::new(53.0, 55.0),
                 cols: 1,
@@ -51,7 +51,7 @@ pub fn initialize_camera_system(
                 ..Default::default()
             },
             LayerData {
-                speed: LayerSpeed::Bidirectional(0.1, 0.5),
+                speed: ParallaxEffect::Bidirectional(0.1, 0.5),
                 path: "sky-clouds.png".to_string(),
                 tile_size: Vec2::new(109.0, 43.0),
                 cols: 1,

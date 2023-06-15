@@ -1,6 +1,6 @@
 use std::cmp::max;
 
-use crate::layer;
+use crate::{layer, ParallaxEffect};
 use bevy::{prelude::*, render::view::RenderLayers};
 
 /// Event to setup and create parallax
@@ -51,18 +51,18 @@ impl CreateParallaxEvent {
             // applies to vertical placement.
 
             let y_max_index = match layer.speed {
-                layer::LayerSpeed::Vertical(_) | layer::LayerSpeed::Bidirectional(..) => max(
+                layer::ParallaxEffect::Vertical(_) | layer::ParallaxEffect::Bidirectional(..) => max(
                     (window_size.y / (layer.tile_size.y * layer.scale) + 1.0) as i32,
                     1,
                 ),
-                layer::LayerSpeed::Horizontal(_) => 0,
+                layer::ParallaxEffect::Horizontal(_) => 0,
             };
             let x_max_index = match layer.speed {
-                layer::LayerSpeed::Horizontal(_) | layer::LayerSpeed::Bidirectional(..) => max(
+                layer::ParallaxEffect::Horizontal(_) | layer::ParallaxEffect::Bidirectional(..) => max(
                     (window_size.x / (layer.tile_size.x * layer.scale) + 1.0) as i32,
                     1,
                 ),
-                layer::LayerSpeed::Vertical(_) => 0,
+                layer::ParallaxEffect::Vertical(_) => 0,
             };
             let texture_count = Vec2::new(
                 2.0 * x_max_index as f32 + 1.0,
@@ -103,11 +103,7 @@ impl CreateParallaxEvent {
 
             // Add layer component to entity
             entity_commands.insert(layer::LayerComponent {
-                speed: match layer.speed {
-                    layer::LayerSpeed::Horizontal(vx) => Vec2::new(vx, 0.0),
-                    layer::LayerSpeed::Vertical(vy) => Vec2::new(0.0, vy),
-                    layer::LayerSpeed::Bidirectional(vx, vy) => Vec2::new(vx, vy),
-                },
+                speed: layer.speed.as_vec2(),
                 texture_count,
                 transition_factor: layer.transition_factor,
                 camera: self.camera,
@@ -151,4 +147,10 @@ impl Default for ParallaxCameraComponent {
             entities: vec![],
         }
     }
+}
+
+#[derive(Component)]
+pub struct ParallaxComponent {
+    pub camera: Entity,
+    pub speed: ParallaxEffect,
 }

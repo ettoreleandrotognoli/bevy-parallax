@@ -11,7 +11,14 @@ impl Plugin for ParallaxPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<ParallaxMoveEvent>()
             .add_event::<CreateParallaxEvent>()
-            .add_systems((create_parallax_system, follow_camera_system).in_set(ParallaxSystems))
+            .add_systems(
+                (
+                    create_parallax_system,
+                    follow_camera_system,
+                    move_entities_system,
+                )
+                    .in_set(ParallaxSystems),
+            )
             .add_system(
                 update_layer_textures_system
                     .in_set(ParallaxSystems)
@@ -73,6 +80,20 @@ fn follow_camera_system(
                 layer_transform.translation.x += event.camera_move_speed.x * layer.speed.x;
                 layer_transform.translation.y += event.camera_move_speed.y * layer.speed.y;
             }
+        }
+    }
+}
+
+fn move_entities_system(
+    mut entities_query: Query<(&ParallaxComponent, &mut Transform)>,
+    mut move_events: EventReader<ParallaxMoveEvent>,
+) {
+    for event in move_events.iter() {
+        for (parallax,mut transform) in entities_query.iter_mut() {
+            if parallax.camera != event.camera {
+                continue;
+            }
+            transform.translation += (event.camera_move_speed * parallax.speed.as_vec2()).extend(0.);
         }
     }
 }

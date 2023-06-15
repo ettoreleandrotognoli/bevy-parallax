@@ -4,8 +4,8 @@ use bevy::{
     render::{camera::Viewport, view::RenderLayers},
 };
 use bevy_parallax::{
-    CreateParallaxEvent, LayerData, LayerSpeed, ParallaxCameraComponent, ParallaxMoveEvent,
-    ParallaxPlugin, ParallaxSystems,
+    CreateParallaxEvent, LayerData, ParallaxEffect, ParallaxCameraComponent, ParallaxComponent,
+    ParallaxMoveEvent, ParallaxPlugin, ParallaxSystems,
 };
 
 fn main() {
@@ -81,7 +81,7 @@ pub fn initialize_camera_system(
     create_parallax.send(CreateParallaxEvent {
         layers_data: vec![
             LayerData {
-                speed: LayerSpeed::Horizontal(0.9),
+                speed: ParallaxEffect::Horizontal(0.9),
                 path: "cyberpunk_back.png".to_string(),
                 tile_size: Vec2::new(96.0, 160.0),
                 cols: 1,
@@ -91,7 +91,7 @@ pub fn initialize_camera_system(
                 ..Default::default()
             },
             LayerData {
-                speed: LayerSpeed::Horizontal(0.6),
+                speed: ParallaxEffect::Horizontal(0.6),
                 path: "cyberpunk_middle.png".to_string(),
                 tile_size: Vec2::new(144.0, 160.0),
                 cols: 1,
@@ -101,7 +101,7 @@ pub fn initialize_camera_system(
                 ..Default::default()
             },
             LayerData {
-                speed: LayerSpeed::Horizontal(0.1),
+                speed: ParallaxEffect::Horizontal(0.1),
                 path: "cyberpunk_front.png".to_string(),
                 tile_size: Vec2::new(272.0, 160.0),
                 cols: 1,
@@ -116,7 +116,7 @@ pub fn initialize_camera_system(
     create_parallax.send(CreateParallaxEvent {
         layers_data: vec![
             LayerData {
-                speed: LayerSpeed::Bidirectional(0.9, 0.9),
+                speed: ParallaxEffect::Bidirectional(0.9, 0.9),
                 path: "sky-stars.png".to_string(),
                 tile_size: Vec2::new(53.0, 55.0),
                 cols: 1,
@@ -126,7 +126,7 @@ pub fn initialize_camera_system(
                 ..Default::default()
             },
             LayerData {
-                speed: LayerSpeed::Bidirectional(0.1, 0.5),
+                speed: ParallaxEffect::Bidirectional(0.1, 0.5),
                 path: "sky-clouds.png".to_string(),
                 tile_size: Vec2::new(109.0, 43.0),
                 cols: 1,
@@ -138,6 +138,38 @@ pub fn initialize_camera_system(
         ],
         camera: right_camera,
     });
+    commands.spawn((
+        SpriteBundle {
+            sprite: Sprite {
+                color: Color::CYAN,
+                custom_size: Some(Vec2::new(50., 50.)),
+                ..default()
+            },
+            transform: Transform::from_xyz(0., 0., 10.),
+            ..default()
+        },
+        ParallaxComponent {
+            speed: ParallaxEffect::Bidirectional(0.5, 0.5),
+            camera: left_camera,
+        },
+        RenderLayers::from_layers(&[1])
+    ));
+    commands.spawn((
+        SpriteBundle {
+            sprite: Sprite {
+                color: Color::GREEN,
+                custom_size: Some(Vec2::new(50., 50.)),
+                ..default()
+            },
+            transform: Transform::from_xyz(0., 0., 10.),
+            ..default()
+        },
+        ParallaxComponent {
+            speed: ParallaxEffect::Bidirectional(0.5, 0.5),
+            camera: right_camera,
+        },
+        RenderLayers::from_layers(&[2])
+    ));
 }
 
 #[derive(Component)]

@@ -5,10 +5,20 @@ use serde::Deserialize;
 /// Layers with horizontal or vertical speed are only able to travel in one direction,
 /// while bidirectional layers can be scrolled endlessly in both directions.
 #[derive(Debug, Deserialize)]
-pub enum LayerSpeed {
+pub enum ParallaxEffect {
     Horizontal(f32),
     Vertical(f32),
     Bidirectional(f32, f32),
+}
+
+impl ParallaxEffect {
+    pub fn as_vec2(&self) -> Vec2 {
+        match  self {
+            ParallaxEffect::Horizontal(vx) => Vec2::new(*vx, 0.0),
+            ParallaxEffect::Vertical(vy) => Vec2::new(0.0, *vy),
+            ParallaxEffect::Bidirectional(vx, vy) => Vec2::new(*vx, *vy),
+        }
+    }
 }
 
 /// Layer initialization data
@@ -17,7 +27,7 @@ pub enum LayerSpeed {
 pub struct LayerData {
     /// Relative speed of layer to the camera movement.
     /// If the speed value is set to 1.0, the layer won't move in that direction.
-    pub speed: LayerSpeed,
+    pub speed: ParallaxEffect,
     /// Path to layer texture file
     pub path: String,
     /// Size of a tile of the texture
@@ -41,7 +51,7 @@ pub struct LayerData {
 impl Default for LayerData {
     fn default() -> Self {
         Self {
-            speed: LayerSpeed::Horizontal(1.0),
+            speed: ParallaxEffect::Horizontal(1.0),
             path: "".to_string(),
             tile_size: Vec2::ZERO,
             cols: 1,
