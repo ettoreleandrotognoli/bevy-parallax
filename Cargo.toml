@@ -22,6 +22,7 @@ features = [
     "bevy_core_pipeline",
     "bevy_sprite",
     "bevy_asset",
+    "serialize",
 ]
 
 [dev-dependencies]

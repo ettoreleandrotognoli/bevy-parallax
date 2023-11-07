@@ -44,8 +44,6 @@ pub fn initialize_camera_system(
                 speed: LayerSpeed::Bidirectional(0.9, 0.9),
                 path: "sky-stars.png".to_string(),
                 tile_size: Vec2::new(53.0, 55.0),
-                cols: 1,
-                rows: 1,
                 scale: 3.0,
                 z: 0.0,
                 ..Default::default()
@@ -54,8 +52,6 @@ pub fn initialize_camera_system(
                 speed: LayerSpeed::Bidirectional(0.1, 0.5),
                 path: "sky-clouds.png".to_string(),
                 tile_size: Vec2::new(109.0, 43.0),
-                cols: 1,
-                rows: 1,
                 scale: 4.0,
                 z: 1.0,
                 ..Default::default()

@@ -17,20 +17,14 @@ impl CreateParallaxEvent {
         asset_server: &AssetServer,
         texture_atlases: &mut Assets<TextureAtlas>,
         render_layer: u8,
-    )  {
+    ) {
         // Spawn new layers using layer_data
         for (i, layer) in self.layers_data.iter().enumerate() {
             // Setup texture
             let texture_handle = asset_server.load(&layer.path);
-            let sprites = layer.cols * layer.rows;
-            let texture_atlas = TextureAtlas::from_grid(
-                texture_handle,
-                layer.tile_size,
-                layer.cols,
-                layer.rows,
-                None,
-                None,
-            );
+            let (cols, rows) = layer.get_sprite_size();
+            let texture_atlas =
+                TextureAtlas::from_grid(texture_handle, layer.tile_size, cols, rows, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
             let spritesheet_bundle = SpriteSheetBundle {
                 texture_atlas: texture_atlas_handle,
@@ -117,8 +111,8 @@ impl CreateParallaxEvent {
                                     width: layer.tile_size.x,
                                     height: layer.tile_size.y,
                                 });
-                            if sprites > 1 {
-                                child_commands.insert(SpriteFrameUpdate::linear_fps(20., sprites));
+                            if let Some(sprite_bundle) = layer.create_sprite_bundle() {
+                                child_commands.insert(sprite_bundle);
                             }
                         }
                     }
@@ -137,7 +131,7 @@ impl CreateParallaxEvent {
                     camera: self.camera,
                 })
                 .insert(RenderLayers::from_layers(&[render_layer]));
-        };
+        }
     }
 }
 
@@ -189,9 +183,7 @@ impl ParallaxCameraComponent {
 
 impl Default for ParallaxCameraComponent {
     fn default() -> Self {
-        Self {
-            render_layer: 0,
-        }
+        Self { render_layer: 0 }
     }
 }
 

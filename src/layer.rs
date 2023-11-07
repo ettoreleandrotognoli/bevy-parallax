@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use serde::Deserialize;
 
+use crate::SpriteFrameUpdate;
+
 /// Layer speed type.
 /// Layers with horizontal or vertical speed are only able to travel in one direction,
 /// while bidirectional layers can be scrolled endlessly in both directions.
@@ -86,6 +88,32 @@ impl LayerRepeat {
     }
 }
 
+#[derive(Debug, Deserialize)]
+pub struct SpriteSettings {
+    /// Columns in the texture file
+    pub cols: usize,
+    /// Rows in the texture file
+    pub rows: usize,
+
+    pub repeat: TimerMode,
+}
+
+impl Default for SpriteSettings {
+    fn default() -> Self {
+        Self {
+            cols: 1,
+            rows: 1,
+            repeat: TimerMode::Repeating,
+        }
+    }
+}
+
+impl SpriteSettings {
+    pub fn create_bundle(&self) -> impl Bundle {
+        SpriteFrameUpdate::from_fps(20., self.cols * self.rows)
+    }
+}
+
 /// Layer initialization data
 #[derive(Debug, Deserialize, Resource)]
 #[serde(default)]
@@ -100,10 +128,6 @@ pub struct LayerData {
     pub path: String,
     /// Size of a tile of the texture
     pub tile_size: Vec2,
-    /// Columns in the texture file
-    pub cols: usize,
-    /// Rows in the texture file
-    pub rows: usize,
     /// Scale of the texture
     pub scale: f32,
     /// Z position of the layer
@@ -112,6 +136,24 @@ pub struct LayerData {
     pub position: Vec2,
 
     pub color: Color,
+
+    pub sprite_settings: Option<SpriteSettings>,
+}
+
+impl LayerData {
+    pub fn get_sprite_size(&self) -> (usize, usize) {
+        match &self.sprite_settings {
+            Some(settings) => (settings.cols, settings.rows),
+            None => (0, 0),
+        }
+    }
+
+    pub fn create_sprite_bundle(&self) -> Option<impl Bundle> {
+        match &self.sprite_settings {
+            Some(settings) => Some(settings.create_bundle()),
+            None => None,
+        }
+    }
 }
 
 impl Default for LayerData {
@@ -121,12 +163,11 @@ impl Default for LayerData {
             repeat: LayerRepeat::Bidirectional(RepeatStrategy::Same, RepeatStrategy::Same),
             path: "".to_string(),
             tile_size: Vec2::ZERO,
-            cols: 1,
-            rows: 1,
             scale: 1.0,
             z: 0.0,
             position: Vec2::ZERO,
             color: Color::WHITE,
+            sprite_settings: None,
         }
     }
 }

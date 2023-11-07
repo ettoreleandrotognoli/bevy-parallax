@@ -37,8 +37,6 @@ pub fn new_create_parallax_event(camera: Entity) -> CreateParallaxEvent {
                 speed: LayerSpeed::Horizontal(0.9),
                 path: "cyberpunk_back.png".to_string(),
                 tile_size: Vec2::new(96.0, 160.0),
-                cols: 1,
-                rows: 1,
                 scale: 4.5,
                 z: 0.0,
                 ..Default::default()
@@ -47,8 +45,6 @@ pub fn new_create_parallax_event(camera: Entity) -> CreateParallaxEvent {
                 speed: LayerSpeed::Horizontal(0.6),
                 path: "cyberpunk_middle.png".to_string(),
                 tile_size: Vec2::new(144.0, 160.0),
-                cols: 1,
-                rows: 1,
                 scale: 4.5,
                 z: 1.0,
                 ..Default::default()
@@ -57,8 +53,6 @@ pub fn new_create_parallax_event(camera: Entity) -> CreateParallaxEvent {
                 speed: LayerSpeed::Horizontal(0.1),
                 path: "cyberpunk_front.png".to_string(),
                 tile_size: Vec2::new(272.0, 160.0),
-                cols: 1,
-                rows: 1,
                 scale: 4.5,
                 z: 2.0,
                 ..Default::default()

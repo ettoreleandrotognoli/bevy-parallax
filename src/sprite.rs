@@ -20,12 +20,17 @@ impl Default for SpriteFrameUpdate {
 }
 
 impl SpriteFrameUpdate {
-    pub fn linear_fps(fps: f32, size: usize) -> Self {
+    pub fn from_duration(duration: Duration, size: usize) -> Self {
         Self {
-            timer: Timer::new(Duration::from_secs_f32(1. / fps), TimerMode::Repeating),
+            timer: Timer::new(duration, TimerMode::Repeating),
             index: 0,
             total: size,
         }
+    }
+
+    pub fn from_fps(fps: f32, size: usize) -> Self {
+        let duration = Duration::from_secs_f32(1. / fps);
+        Self::from_duration(duration, size)
     }
 
     pub fn next_index(&mut self, duration: Duration) -> usize {

@@ -4,6 +4,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_parallax::{
     CreateParallaxEvent, LayerData, LayerRepeat, LayerSpeed, LayerTextureComponent,
     ParallaxCameraComponent, ParallaxMoveEvent, ParallaxPlugin, ParallaxSystems, RepeatStrategy,
+    SpriteSettings,
 };
 
 fn main() {
@@ -52,12 +53,15 @@ pub fn initialize_camera_system(
                 path: "mills-back.png".to_string(),
                 tile_size: Vec2::new(1123., 794.),
                 //tile_size: Vec2::new(751.0, 439.),
-                cols: 6,
-                rows: 1,
                 scale: 0.15,
                 z: 0.6,
                 position: Vec2::new(0., 50.),
                 color: Color::BLACK,
+                sprite_settings: Some(SpriteSettings {
+                    cols: 6,
+                    rows: 1,
+                    ..default()
+                }),
                 ..default()
             },
             LayerData {
@@ -66,12 +70,15 @@ pub fn initialize_camera_system(
                 path: "mills-back.png".to_string(),
                 tile_size: Vec2::new(1123., 794.),
                 //tile_size: Vec2::new(751.0, 439.),
-                cols: 6,
-                rows: 1,
                 scale: 0.25,
                 z: 0.7,
                 position: Vec2::new(0., 50.),
                 color: Color::DARK_GRAY,
+                sprite_settings: Some(SpriteSettings {
+                    cols: 6,
+                    rows: 1,
+                    ..default()
+                }),
                 ..default()
             },
             LayerData {
@@ -80,12 +87,15 @@ pub fn initialize_camera_system(
                 path: "mills-back.png".to_string(),
                 tile_size: Vec2::new(1123., 794.),
                 //tile_size: Vec2::new(751.0, 439.),
-                cols: 6,
-                rows: 1,
                 scale: 0.5,
                 z: 0.8,
                 position: Vec2::new(0., 25.),
                 color: Color::GRAY,
+                sprite_settings: Some(SpriteSettings {
+                    cols: 6,
+                    rows: 1,
+                    ..default()
+                }),
                 ..default()
             },
             LayerData {
@@ -94,11 +104,14 @@ pub fn initialize_camera_system(
                 path: "mills-back.png".to_string(),
                 tile_size: Vec2::new(1123., 794.),
                 //tile_size: Vec2::new(751.0, 439.),
-                cols: 6,
-                rows: 1,
                 scale: 0.8,
                 z: 0.9,
                 color: Color::WHITE,
+                sprite_settings: Some(SpriteSettings {
+                    cols: 6,
+                    rows: 1,
+                    ..default()
+                }),
                 ..default()
             },
             LayerData {
@@ -106,11 +119,14 @@ pub fn initialize_camera_system(
                 repeat: LayerRepeat::horizontally(RepeatStrategy::Mirror),
                 path: "mills-front.png".to_string(),
                 tile_size: Vec2::new(750.0, 434.),
-                cols: 6,
-                rows: 1,
                 z: 1.0,
                 scale: 1.5,
                 position: Vec2::new(0., -100.),
+                sprite_settings: Some(SpriteSettings {
+                    cols: 6,
+                    rows: 1,
+                    ..default()
+                }),
                 ..default()
             },
         ],
