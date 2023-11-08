@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 use serde::Deserialize;
 
@@ -89,28 +91,46 @@ impl LayerRepeat {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct SpriteSettings {
-    /// Columns in the texture file
-    pub cols: usize,
-    /// Rows in the texture file
-    pub rows: usize,
-
-    pub repeat: TimerMode,
-}
-
-impl Default for SpriteSettings {
-    fn default() -> Self {
-        Self {
-            cols: 1,
-            rows: 1,
-            repeat: TimerMode::Repeating,
-        }
-    }
+pub enum SpriteSettings {
+    Static {
+        index: usize,
+        tile_size: Vec2,
+        cols: usize,
+        rows: usize,
+    },
+    Animated {
+        tile_size: Vec2,
+        cols: usize,
+        rows: usize,
+        speed: Duration,
+    },
 }
 
 impl SpriteSettings {
-    pub fn create_bundle(&self) -> impl Bundle {
-        SpriteFrameUpdate::from_fps(20., self.cols * self.rows)
+    pub fn static_with_size(size: Vec2) -> Self {
+        Self::Static {
+            index: 0,
+            tile_size: size,
+            cols: 1,
+            rows: 1,
+        }
+    }
+
+    pub fn crate_texture_atlas(&self, image_handle: Handle<Image>) -> TextureAtlas {
+        match &self {
+            Self::Static {
+                index,
+                tile_size,
+                cols,
+                rows,
+            } => TextureAtlas::from_grid(image_handle, *tile_size, *cols, *rows, None, None)
+            Self::Animated {
+                tile_size,
+                cols,
+                rows,
+                speed,
+            } => TextureAtlas::from_grid(image_handle, *tile_size, *cols, *rows, None, None),
+        }
     }
 }
 
@@ -126,8 +146,6 @@ pub struct LayerData {
 
     /// Path to layer texture file
     pub path: String,
-    /// Size of a tile of the texture
-    pub tile_size: Vec2,
     /// Scale of the texture
     pub scale: f32,
     /// Z position of the layer
@@ -137,7 +155,7 @@ pub struct LayerData {
 
     pub color: Color,
 
-    pub sprite_settings: Option<SpriteSettings>,
+    pub sprite_settings: SpriteSettings,
 }
 
 impl LayerData {
@@ -162,12 +180,16 @@ impl Default for LayerData {
             speed: LayerSpeed::Horizontal(1.0),
             repeat: LayerRepeat::Bidirectional(RepeatStrategy::Same, RepeatStrategy::Same),
             path: "".to_string(),
-            tile_size: Vec2::ZERO,
             scale: 1.0,
             z: 0.0,
             position: Vec2::ZERO,
             color: Color::WHITE,
-            sprite_settings: None,
+            sprite_settings: SpriteSettings::Static {
+                index: 0,
+                tile_size: Vec2::ZERO,
+                cols: 0,
+                rows: 0,
+            },
         }
     }
 }

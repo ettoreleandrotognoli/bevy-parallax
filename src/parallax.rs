@@ -23,13 +23,13 @@ impl CreateParallaxEvent {
             // Setup texture
             let texture_handle = asset_server.load(&layer.path);
             let (cols, rows) = layer.get_sprite_size();
-            let texture_atlas =
-                TextureAtlas::from_grid(texture_handle, layer.tile_size, cols, rows, None, None);
+            let texture_atlas = layer.sprite_settings.crate_texture_atlas(texture_handle);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
             let spritesheet_bundle = SpriteSheetBundle {
                 texture_atlas: texture_atlas_handle,
                 sprite: TextureAtlasSprite {
                     color: layer.color,
+                    index: 0, // @todo static can set the index
                     ..default()
                 },
                 ..default()
